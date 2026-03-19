@@ -1,0 +1,57 @@
+{
+  "name": "geolingua",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Reading-free geographic language selector. No reading required.",
+  "author": "Erik Smith <github.com/provandal>",
+  "license": "MIT",
+  "homepage": "https://geolingua.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/provandal/geolingua"
+  },
+  "keywords": [
+    "i18n", "internationalization", "language-selector", "globe",
+    "accessibility", "a11y", "react", "multilingual", "localization"
+  ],
+  "main": "./dist/geolingua.umd.cjs",
+  "module": "./dist/geolingua.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/geolingua.js",
+      "require": "./dist/geolingua.umd.cjs"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0",
+    "three": ">=0.150.0"
+  },
+  "dependencies": {
+    "d3-geo": "^3.1.0",
+    "topojson-client": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.170.0",
+    "@types/d3-geo": "^3.1.0",
+    "@types/topojson-client": "^3.1.0",
+    "@types/topojson-specification": "^1.0.5",
+    "@types/geojson": "^7946.0.14",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.0"
+  },
+  "sideEffects": false
+}

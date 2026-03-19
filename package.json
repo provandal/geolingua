@@ -1,0 +1,13 @@
+{
+  "name": "geolingua-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w packages/geolingua",
+    "dev": "npm run dev -w apps/demo",
+    "typecheck": "tsc --noEmit -p packages/geolingua/tsconfig.json"
+  }
+}
