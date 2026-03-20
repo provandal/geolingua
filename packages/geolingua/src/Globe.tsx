@@ -96,7 +96,7 @@ function paintCountries(
   for (const f of features) {
     ctx.beginPath();
     pathGen(f);
-    const fId = String(f.id);
+    const fId = String(Number(f.id));
     const iso = NUMERIC_TO_ISO[fId] ?? fId;
 
     if (iso === selectedId) {
@@ -122,7 +122,7 @@ function findCountryAtPoint(
 ): { id: string; iso: string; name: string } | null {
   for (const f of features) {
     if (geoContains(f, [lng, lat])) {
-      const numId = String(f.id);
+      const numId = String(Number(f.id));
       const iso = NUMERIC_TO_ISO[numId] ?? numId;
       // Use our own language data for the country name (world-atlas has no name property)
       const name = COUNTRY_LANGUAGES[iso]?.name ?? iso;

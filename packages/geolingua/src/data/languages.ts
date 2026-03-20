@@ -1044,6 +1044,59 @@ export const COUNTRY_LANGUAGES: CountryLanguageMap = {
       { code: 'hi', nativeName: 'हिन्दी', englishName: 'Hindi', speakers: 250000 },
     ],
   },
+  'VU': {
+    name: 'Vanuatu', hasSubdivisions: false, languages: [
+      { code: 'bi', nativeName: 'Bislama', englishName: 'Bislama', speakers: 10000 },
+      { code: 'en', nativeName: 'English', englishName: 'English', speakers: 60000 },
+      { code: 'fr', nativeName: 'Français', englishName: 'French', speakers: 50000 },
+    ],
+  },
+  'SB': {
+    name: 'Solomon Islands', hasSubdivisions: false, languages: [
+      { code: 'en', nativeName: 'English', englishName: 'English', speakers: 30000 },
+    ],
+  },
+  'NC': {
+    name: 'New Caledonia', hasSubdivisions: false, languages: [
+      { code: 'fr', nativeName: 'Français', englishName: 'French', speakers: 270000 },
+    ],
+  },
+
+  // ─── Remaining territories & small states ───────────────────
+  'AD': {
+    name: 'Andorra', hasSubdivisions: false, languages: [
+      { code: 'ca', nativeName: 'Català', englishName: 'Catalan', speakers: 39000 },
+      { code: 'es', nativeName: 'Español', englishName: 'Spanish', speakers: 30000 },
+      { code: 'fr', nativeName: 'Français', englishName: 'French', speakers: 15000 },
+    ],
+  },
+  'AG': {
+    name: 'Antigua and Barbuda', hasSubdivisions: false, languages: [
+      { code: 'en', nativeName: 'English', englishName: 'English', speakers: 97000 },
+    ],
+  },
+  'BS': {
+    name: 'Bahamas', hasSubdivisions: false, languages: [
+      { code: 'en', nativeName: 'English', englishName: 'English', speakers: 390000 },
+    ],
+  },
+  'BT': {
+    name: 'Bhutan', hasSubdivisions: false, languages: [
+      { code: 'dz', nativeName: 'རྫོང་ཁ', englishName: 'Dzongkha', speakers: 170000 },
+      { code: 'en', nativeName: 'English', englishName: 'English', speakers: 50000 },
+    ],
+  },
+  'GL': {
+    name: 'Greenland', hasSubdivisions: false, languages: [
+      { code: 'kl', nativeName: 'Kalaallisut', englishName: 'Greenlandic', speakers: 50000 },
+      { code: 'da', nativeName: 'Dansk', englishName: 'Danish', speakers: 8000 },
+    ],
+  },
+  'PS': {
+    name: 'Palestine', hasSubdivisions: false, languages: [
+      { code: 'ar', nativeName: 'العربية', englishName: 'Arabic', speakers: 4500000 },
+    ],
+  },
 };
 
 export function getLanguagesForCountry(countryCode: string): CountryData | null {
