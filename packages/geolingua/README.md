@@ -56,14 +56,14 @@ Or use a custom trigger:
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `onLanguageSelect` | `(locale: string) => void` | *required* | Called with the selected BCP 47 locale code |
+| `onLanguageSelect` | `(locale: string) => void` | *required* | Called with the selected BCP 47 locale code (see [Behavior on Mount](#behavior-on-mount)) |
 | `appName` | `string` | `'this app'` | App name shown in welcome phrases |
 | `theme` | `ThemePreset \| ThemeObject` | `'fresco'` | Visual theme: `'fresco'`, `'space'`, `'minimal'`, `'a11y'`, or custom |
 | `initialMode` | `'full' \| 'icon'` | `'full'` | `'icon'` renders a compact trigger that expands to show the globe |
 | `autoCollapseOnSelect` | `boolean` | `true` | Auto-collapse to icon after selection (icon mode only) |
 | `renderTrigger` | `(props) => ReactNode` | — | Custom trigger element for icon mode |
-| `detectBrowserLanguage` | `boolean` | `true` | Auto-detect browser language and show suggestion |
-| `persist` | `boolean` | `true` | Persist selected locale to localStorage |
+| `detectBrowserLanguage` | `boolean` | `true` | Auto-detect browser language on mount (see [Behavior on Mount](#behavior-on-mount)) |
+| `persist` | `boolean` | `true` | Persist selected locale to localStorage (see [Behavior on Mount](#behavior-on-mount)) |
 | `storageKey` | `string` | `'geolingua_locale'` | localStorage key for persistence |
 | `showSkip` | `boolean` | `true` | Show "Continue in English" skip button |
 | `skipLabel` | `string` | `'Continue in English'` | Skip button label |
@@ -78,8 +78,73 @@ Or use a custom trigger:
 | `onReady` | `() => void` | — | Called when globe finishes loading |
 | `onError` | `(error) => void` | — | Called on errors (geo data load, mic access, detection failures) |
 | `globeAriaLabel` | `string` | — | Custom ARIA label for the globe |
+| `iconSrc` | `string` | — | Custom icon image URL for the default trigger in icon mode |
 | `className` | `string` | — | CSS class for the root element |
 | `style` | `CSSProperties` | — | Inline styles for the root element |
+
+## Behavior on Mount
+
+With default settings, `onLanguageSelect` fires **automatically on mount** — before any user interaction. This is important to understand when integrating GeoLingua into an existing app.
+
+The mount-time callback fires in two cases (checked in order):
+
+1. **`persist={true}` (default)** — If a locale was previously saved to localStorage, GeoLingua restores it and calls `onLanguageSelect(savedLocale)`.
+2. **`detectBrowserLanguage={true}` (default)** — If no persisted locale exists, GeoLingua reads `navigator.language`, matches it against its language database, and calls `onLanguageSelect(detectedLocale)`.
+
+If your app already manages language detection and persistence (e.g., via i18next, next-intl, or your own logic), disable both to avoid conflicts:
+
+```tsx
+<GeoLingua
+  detectBrowserLanguage={false}
+  persist={false}
+  onLanguageSelect={(locale) => i18n.changeLanguage(locale)}
+/>
+```
+
+## Icon Mode Positioning
+
+Icon mode renders a popover that opens **upward** from the icon (`bottom: 100%`). This works well when the icon is near the bottom of the viewport (e.g., `position: fixed; bottom: 24px`), but the popover will render off-screen if the icon is at the **top** of the page.
+
+For top-of-page placement (e.g., in a site header), use a **modal overlay pattern** instead — render your own icon button and open GeoLingua in `initialMode="full"` inside a centered overlay:
+
+```tsx
+import { GeoLingua } from 'geolingua';
+
+function LanguageButton() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>🌍</button>
+      {open && (
+        <div
+          onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 9999,
+          }}
+        >
+          <div style={{ width: 520, height: 600, borderRadius: 16, overflow: 'hidden' }}>
+            <GeoLingua
+              initialMode="full"
+              theme="space"
+              detectBrowserLanguage={false}
+              persist={false}
+              onLanguageSelect={(locale) => {
+                i18n.changeLanguage(locale);
+                setTimeout(() => setOpen(false), 600);
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+```
+
+See [ProtoViz](https://github.com/provandal/protoviz) for a complete working example of this pattern.
 
 ## Themes
 
@@ -149,6 +214,53 @@ const { state, handleLanguageSelect, reset } = useGeoLingua({
 - Three.js >= 0.150 (peer dependency)
 - WebGL-capable browser (for 3D globe)
 - Network access to jsdelivr CDN (for country boundary data)
+
+## Integration Patterns
+
+### Alongside an existing language dropdown
+
+GeoLingua works well as a companion to a traditional dropdown selector. Use GeoLingua as the visual/discovery experience while keeping the dropdown as a fast, accessible fallback:
+
+```tsx
+function LanguageSelector() {
+  const handleSelect = (locale) => i18n.changeLanguage(locale);
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <GeoLinguaGlobeButton onLanguageSelect={handleSelect} />
+      <LanguageDropdown onLanguageSelect={handleSelect} />
+    </div>
+  );
+}
+```
+
+### As an optional dependency
+
+If GeoLingua is optional in your project (e.g., you want the build to succeed without it), use a Vite plugin to resolve missing imports to an empty module:
+
+```js
+// vite.config.js
+function optionalDep(name) {
+  const virtualId = `\0optional:${name}`;
+  let isInstalled = false;
+  try { require.resolve(name); isInstalled = true; } catch {}
+  return {
+    name: `optional-dep-${name}`,
+    resolveId(id) { if (id === name && !isInstalled) return virtualId; },
+    load(id) { if (id === virtualId) return 'export default null;'; },
+  };
+}
+
+export default defineConfig({
+  plugins: [optionalDep('geolingua'), react()],
+});
+```
+
+Then use `React.lazy` + an error boundary to gracefully fall back when GeoLingua isn't installed.
+
+## Real-World Example
+
+**[ProtoViz](https://github.com/provandal/protoviz)** — an interactive protocol visualization platform — integrates GeoLingua as a globe icon in the header alongside a dropdown fallback, using the modal overlay pattern with `detectBrowserLanguage={false}` and `persist={false}` (since ProtoViz uses i18next for language management). See [`src/components/common/LanguageSelector.jsx`](https://github.com/provandal/protoviz/blob/main/src/components/common/LanguageSelector.jsx) for the full implementation.
 
 ## License
 

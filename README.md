@@ -13,8 +13,10 @@
 ## Install
 
 ```bash
-npm install geolingua
+npm install geolingua three
 ```
+
+> `three` and `react`/`react-dom` are peer dependencies.
 
 ## Usage
 
@@ -72,6 +74,14 @@ const { state, handleCountryClick, handleLanguageSelect } = useGeoLingua({
   onLanguageSelect: (locale) => console.log(locale),
 });
 ```
+
+## Used By
+
+- **[ProtoViz](https://github.com/provandal/protoviz)** — Interactive protocol visualization for network engineers
+
+## Documentation
+
+See the [full documentation](packages/geolingua/README.md) for props, integration patterns, and advanced usage.
 
 ---
 
