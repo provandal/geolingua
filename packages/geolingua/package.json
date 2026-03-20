@@ -1,6 +1,6 @@
 {
   "name": "geolingua",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Reading-free geographic language selector. No reading required.",
   "author": "Erik Smith <github.com/provandal>",
@@ -11,8 +11,15 @@
     "url": "https://github.com/provandal/geolingua"
   },
   "keywords": [
-    "i18n", "internationalization", "language-selector", "globe",
-    "accessibility", "a11y", "react", "multilingual", "localization"
+    "i18n",
+    "internationalization",
+    "language-selector",
+    "globe",
+    "accessibility",
+    "a11y",
+    "react",
+    "multilingual",
+    "localization"
   ],
   "main": "./dist/geolingua.umd.cjs",
   "module": "./dist/geolingua.js",
@@ -24,7 +31,11 @@
       "require": "./dist/geolingua.umd.cjs"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc --noEmit"
